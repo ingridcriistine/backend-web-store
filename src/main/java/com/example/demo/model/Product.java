@@ -24,7 +24,7 @@ public class Product {
     private Boolean status;
 
     @ManyToOne
-    @JoinColumn(name = "idCategory", nullable = false)
+    @JoinColumn(name = "idCategory")
     private Category category;
 
     public long getId() {
