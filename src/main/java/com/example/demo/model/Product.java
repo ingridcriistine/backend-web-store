@@ -21,6 +21,8 @@ public class Product {
 
     private Float price;
 
+    private Boolean status;
+
     @ManyToOne
     @JoinColumn(name = "idCategory", nullable = false)
     private Category category;
@@ -55,5 +57,13 @@ public class Product {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 }

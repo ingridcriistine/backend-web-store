@@ -7,7 +7,7 @@ import com.example.demo.services.ProductService;
 public class ProductImpl implements  ProductService {
     
     @Override
-    public Product createProduct(String title, Float price, Category category) {
+    public Product createProduct(String title, Float price, Category category, Boolean status) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
