@@ -2,7 +2,6 @@ package com.example.demo.implementations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
 import com.example.demo.model.UserModel;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.UserService;
