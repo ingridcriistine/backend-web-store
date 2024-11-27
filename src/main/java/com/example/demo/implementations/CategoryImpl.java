@@ -34,17 +34,6 @@ public class CategoryImpl implements  CategoryService{
     }
 
     @Override
-    public ResponseEntity<CategoryData> getCategory(Long id) {
-        var category = categoryRepo.findById(id);
-        
-        if(category.isEmpty()) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity<>(new CategoryData(category.get().getId(), category.get().getName()), HttpStatus.OK);
-    }
-
-    @Override
     public ResponseEntity<Object> updateCategory(Long id, String name) {
         var category = categoryRepo.findById(id);
         
@@ -69,6 +58,17 @@ public class CategoryImpl implements  CategoryService{
         categoryRepo.deleteById(id);
 
         return new ResponseEntity<>("Categoria deletada com sucesso!", HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<CategoryData> getCategory(Long id) {
+        var category = categoryRepo.findById(id);
+        
+        if(category.isEmpty()) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        return new ResponseEntity<>(new CategoryData(category.get().getId(), category.get().getName()), HttpStatus.OK);
     }
     
 }
