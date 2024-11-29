@@ -4,5 +4,8 @@ public record UserData (
     String name,
     String email,
     String cpf,
-    String password
-){}
+    String password,
+    Boolean account 
+){
+
+}

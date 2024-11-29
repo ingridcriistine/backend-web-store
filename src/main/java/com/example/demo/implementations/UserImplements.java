@@ -12,13 +12,25 @@ public class UserImplements implements UserService{
     UserRepository repo;
 
     @Override
-    public boolean checkPassword(String Password) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'checkPassword'");
+    public Boolean checkPassword(String password) {
+        if (password.length() < 12) {
+            return false;
+        }
+        //? Regex que testa se tem Minuscula, Maiuscula e Numerico em qualquer parte da String, veja em Regex101.com se quiser testar
+        if (!password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*[1-9]).+$")) {
+            return false;
+        }
+        return true;
     }
 
     @Override
-    public UserModel create(String name, String email, String cpf, String password) {
+    public Boolean validateEmail(String email) {
+        //ainda é preciso fazer a validação do email
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    @Override
+    public UserModel create(String name, String email, String cpf, String password, Boolean actvAccount) {
 
         if (!repo.findByEmail(email).isEmpty()) {
             return null;
@@ -34,6 +46,7 @@ public class UserImplements implements UserService{
         newUser.setCpf(cpf);
         newUser.setEmail(email);
         newUser.setName(name);
+        newUser.setActvAccount(true);
 
         //? Salvado com BCrypt
         newUser.setPassword(encoder.encode(password));
@@ -55,15 +68,17 @@ public class UserImplements implements UserService{
     }
 
     @Override
-    public boolean delete(Long id) {
+    public Boolean delete(Long id) {
         var checkId = repo.findById(id);
 
         if(checkId.isEmpty()){
             return false;
         }
-        
+
+        //PRECISARÁ PEGAR O USUÁRIO DO ID INFORMADO PARA MUDAR O ATRIBUTO DE CONTA
         return true;
     }
+
 
  
 }

@@ -26,6 +26,9 @@ public class UserModel {
     @Column
     public String password;
 
+    @Column
+    public Boolean actvAccount;
+
     public Long getId() {
         return id;
     }
@@ -59,6 +62,14 @@ public class UserModel {
     }
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Boolean getActvAccount() {
+        return actvAccount;
+    }
+
+    public void setActvAccount(Boolean actvAccount) {
+        this.actvAccount = actvAccount;
     }
 
 }
