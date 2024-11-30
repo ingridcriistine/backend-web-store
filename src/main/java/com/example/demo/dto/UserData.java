@@ -1,5 +1,11 @@
 package com.example.demo.dto;
 
-public class UserData {
-    
+public record UserData (
+    String name,
+    String email,
+    String cpf,
+    String password,
+    Boolean account 
+){
+
 }
