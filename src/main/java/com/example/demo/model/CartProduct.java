@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -14,16 +15,21 @@ public class CartProduct {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private long id;
 
+    @Column
     private int quantity;
 
+    @Column
     private Float totalPrice;
 
     @ManyToOne
     @JoinColumn(name = "idCart")
     private Cart cart;
+
+    @ManyToOne
+    @JoinColumn(name = "idProduct")
+    private Product product;
 
     public long getId() {
         return id;
@@ -47,5 +53,21 @@ public class CartProduct {
 
     public void setTotalPrice(Float totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }
