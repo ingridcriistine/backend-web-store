@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.CategoryData;
-import com.example.demo.repositories.CategoryRepository;
 import com.example.demo.services.CategoryService;
 
 @RestController
@@ -23,9 +22,6 @@ public class CategoryController {
     
     @Autowired
     CategoryService categoryService;
-
-    @Autowired
-    CategoryRepository categoryRepo;
 
     @PostMapping("/category")
     public ResponseEntity<Object> createCategory(@RequestAttribute("token") String token, @RequestBody String name) {
