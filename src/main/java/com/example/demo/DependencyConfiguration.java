@@ -3,10 +3,14 @@ package com.example.demo;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.example.demo.implementations.CartImpl;
+import com.example.demo.implementations.CartProductImpl;
 import com.example.demo.implementations.CategoryImpl;
 import com.example.demo.implementations.DefaultJWTService;
 import com.example.demo.implementations.ProductImpl;
 import com.example.demo.implementations.UserImplements;
+import com.example.demo.services.CartProductService;
+import com.example.demo.services.CartService;
 import com.example.demo.services.CategoryService;
 import com.example.demo.services.JWTService;
 import com.example.demo.services.ProductService;
@@ -37,4 +41,15 @@ public class DependencyConfiguration {
     public ProductService productService() {
         return new ProductImpl();
     } 
+
+    @Bean
+    public CartService cartService() {
+      return new CartImpl();
+    }
+
+    @Bean
+    public CartProductService cartProductService() {
+      return new CartProductImpl();
+    }
+
 }

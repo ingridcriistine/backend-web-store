@@ -9,7 +9,7 @@ import com.example.demo.repositories.CartProductRepository;
 import com.example.demo.repositories.CartRepository;
 import com.example.demo.services.CartProductService;
 
-public class CartProductImpl implements  CartProductService {
+public class CartProductImpl implements CartProductService {
 
     @Autowired
     CartProductRepository cartProductRepo;
@@ -74,5 +74,4 @@ public class CartProductImpl implements  CartProductService {
 
         return cart.get();
     }
-    
 }
