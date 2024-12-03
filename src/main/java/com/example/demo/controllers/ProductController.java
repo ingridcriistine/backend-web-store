@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.ProductData;
-import com.example.demo.model.Category;
 import com.example.demo.services.ProductService;
 
 @RestController
@@ -26,11 +25,11 @@ public class ProductController {
     ProductService productService;
 
     @PostMapping("/product")
-    public ResponseEntity<Object> createProduct(@RequestAttribute("token") String token, @RequestBody String name, @RequestBody Float price, @RequestBody Boolean status, @RequestBody Category category) {
+    public ResponseEntity<Object> createProduct(@RequestAttribute("token") String token, @RequestBody ProductData productData) {
         
-        var op = productService.createProduct(name, price, category, status);
+        var op = productService.createProduct(productData.title(), productData.price(), productData.category(), productData.status());
         
-        if(name == null || price == null || status == null) {
+        if(productData.title() == null || productData.price() == null || productData.status() == null) {
             return new ResponseEntity<>("Por favor, preencha corretamente todos os campos!", HttpStatus.BAD_REQUEST);
         }
 
@@ -42,9 +41,9 @@ public class ProductController {
     }
 
     @PutMapping("product/{id}")
-    public ResponseEntity<Object> updateProduct(@RequestAttribute("token") String token, @PathVariable Long id, @RequestBody String name, @RequestBody Float price, @RequestBody Boolean status, @RequestBody Category category) {
+    public ResponseEntity<Object> updateProduct(@RequestAttribute("token") String token, @PathVariable Long id, @RequestBody ProductData productData) {
     
-        var op = productService.updateProduct(id, name, price, status, category);
+        var op = productService.updateProduct(productData.id(), productData.title(), productData.price(), productData.status(), productData.category());
 
         if(op == null) {
             return new ResponseEntity<>("Produto inválido!", HttpStatus.BAD_REQUEST);
