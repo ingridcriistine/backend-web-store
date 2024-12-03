@@ -2,6 +2,7 @@ package com.example.demo;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.example.demo.implementations.CartImpl;
 import com.example.demo.implementations.CartProductImpl;
@@ -51,5 +52,4 @@ public class DependencyConfiguration {
     public CartProductService cartProductService() {
       return new CartProductImpl();
     }
-
 }
