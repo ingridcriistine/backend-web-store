@@ -3,7 +3,6 @@ package com.example.demo.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +15,7 @@ import com.example.demo.dto.UserData;
 import com.example.demo.model.UserModel;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.JWTService;
+import com.example.demo.services.PasswordEncoderService;
 import com.example.demo.services.UserService;
 
 @RestController
@@ -29,7 +29,7 @@ public class UserController{
     UserService service;
 
     @Autowired
-    PasswordEncoder encoder;
+    PasswordEncoderService encoder;
 
     @Autowired
     JWTService<Token> jwtService;
@@ -70,7 +70,7 @@ public class UserController{
             return new ResponseEntity<>(new SecurityToken(null, "Usuário não existe"), HttpStatus.CONFLICT);
         }
 
-        if (!encoder.matches(data.password(), Login.getPassword())) {
+        if (!encoder.validatePass(data.password(), Login.getPassword())) {
             return new ResponseEntity<>(new SecurityToken(null, "Senha inválida"), HttpStatus.CONFLICT);
         }
 

@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
-public class PasswordEncoderService {
-    
+public interface PasswordEncoderService {
+    String encode(String password);
+    Boolean validatePass(String password, String passwordEncoder);
 }
