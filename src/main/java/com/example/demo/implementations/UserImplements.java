@@ -2,6 +2,7 @@ package com.example.demo.implementations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import com.example.demo.model.UserModel;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.UserService;
@@ -25,8 +26,7 @@ public class UserImplements implements UserService{
 
     @Override
     public Boolean validateEmail(String email) {
-        //ainda é preciso fazer a validação do email
-        throw new UnsupportedOperationException("Not supported yet.");
+       return true;
     }
 
     @Override
