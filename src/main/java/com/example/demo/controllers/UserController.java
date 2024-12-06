@@ -13,7 +13,9 @@ import com.example.demo.dto.SecurityToken;
 import com.example.demo.dto.Token;
 import com.example.demo.dto.UserData;
 import com.example.demo.model.UserModel;
+import com.example.demo.repositories.CartRepository;
 import com.example.demo.repositories.UserRepository;
+import com.example.demo.services.CartService;
 import com.example.demo.services.JWTService;
 import com.example.demo.services.PasswordEncoderService;
 import com.example.demo.services.UserService;
@@ -34,6 +36,12 @@ public class UserController{
     @Autowired
     JWTService<Token> jwtService;
 
+     @Autowired
+    CartService cartService;
+
+    @Autowired
+    CartRepository cartRepo;
+
 
     @PostMapping("/user")
     public ResponseEntity<String> create(@RequestBody UserData data){
@@ -52,8 +60,8 @@ public class UserController{
         }
 
       
-        service.create(data.name(), data.email(), data.cpf(), data.password(), data.account());
-       
+        var user = service.create(data.name(), data.email(), data.cpf(), data.password(), data.account());
+        cartService.createCart(user);
         return new ResponseEntity<>("Usuário cadastrado", HttpStatus.OK);
     }
 

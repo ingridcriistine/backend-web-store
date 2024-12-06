@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.CartData;
+import com.example.demo.dto.DeleteCart;
 import com.example.demo.dto.Token;
 import com.example.demo.repositories.CartRepository;
+import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.CartService;
 
 
@@ -29,23 +30,32 @@ public class CartController {
     @Autowired
     CartRepository cartRepo;
 
-    @PostMapping("/cart")
-    public ResponseEntity<Object> createCart(@RequestAttribute("token") Token token, @RequestBody CartData cartData) {
+    @Autowired
+    UserRepository userRepo;
+
+    // @PostMapping("/cart")
+    // public ResponseEntity<Object> createCart(@RequestAttribute("token") Token token, @RequestBody CartData cartData) {
         
-        var op = cartRepo.findByUser(cartData.user());
+    //     var op = cartRepo.findByUser(cartData.user());
 
-        if(op == null) {
-            return new ResponseEntity<>("Carrinho inválido!", HttpStatus.BAD_REQUEST);
-        }
+    //     if(op == null) {
+    //         return new ResponseEntity<>("Carrinho inválido!", HttpStatus.BAD_REQUEST);
+    //     }
 
-        cartService.createCart(cartData.user(), cartData.cartProduct(), cartData.totalPrice());
-        return new ResponseEntity<>("Carrinho gerado com sucesso!", HttpStatus.OK);
-    }
+    //     cartService.createCart(cartData.user(), cartData.cartProduct(), cartData.totalPrice());
+    //     return new ResponseEntity<>("Carrinho gerado com sucesso!", HttpStatus.OK);
+    // }
 
     @PutMapping("cart/{id}")
-    public ResponseEntity<Object> updateCart(@RequestAttribute("token") Token token, @PathVariable Long id, @RequestBody CartData cartData) {
+    public ResponseEntity<Object> updateCart(@RequestAttribute("token") Token token, @RequestBody CartData cartData) {
         
-        var op = cartService.createCart(cartData.user(), cartData.cartProduct(), cartData.totalPrice());
+        var user = userRepo.findById(token.getId());
+
+        if(user.isEmpty()) {
+            return new ResponseEntity<>("Usuário inválido!", HttpStatus.BAD_REQUEST);
+        }
+        
+        var op = cartService.updateCart(cartData.id(), cartData.quantity(), cartData.product());
 
         if(op == null) {
             return new ResponseEntity<>("Carrinho inválido!", HttpStatus.BAD_REQUEST);
@@ -55,9 +65,9 @@ public class CartController {
     }
 
     @DeleteMapping("/cart/{id}")
-    public ResponseEntity<Object> deleteCart(@RequestAttribute("token") Token token, @PathVariable Long id) {
+    public ResponseEntity<Object> deleteCart(@RequestAttribute("token") Token token, @PathVariable DeleteCart data) {
 
-        var op = cartService.deleteCart(id);
+        var op = cartService.deleteCart(data.idCart(), data.idProduct());
 
          if(op == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
@@ -67,18 +77,17 @@ public class CartController {
 
     }
 
-    @GetMapping("/cart/{id}")
-    public ResponseEntity<Object> getCart(@PathVariable Long id) {
+    @GetMapping("/cart")
+    public ResponseEntity<Object> getCart(@RequestAttribute("token") Token token) {
         
-        var op = cartService.getCart(id);
-        
-        if(op == null) {
+        var userOp = userRepo.findById(token.getId());
+        var cartOp = cartRepo.findByUser(userOp.get());  
+              
+        if(cartOp == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-
-        return new ResponseEntity<>(new CartData(op.getUser(), op.getCartProduct(), op.getTotalPrice()), HttpStatus.OK);
+        
+        var cart = cartService.getCart(cartOp.get(0).getId());
+        return new ResponseEntity<>(cart, HttpStatus.OK);
     }
-    
-
-    
 }

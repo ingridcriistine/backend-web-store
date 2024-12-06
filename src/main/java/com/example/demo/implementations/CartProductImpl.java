@@ -18,7 +18,7 @@ public class CartProductImpl implements CartProductService {
     CartRepository cartRepo;
 
     @Override
-    public CartProduct createCartProduct(int quantity, Float totalPrice, Cart cart, Product product) {
+    public CartProduct createCartProduct(int quantity, Cart cart, Product product) {
         var findCart = cartRepo.findById(cart.getId());
 
         if(findCart == null) {
@@ -28,7 +28,7 @@ public class CartProductImpl implements CartProductService {
         var newCartProduct = new CartProduct();
         newCartProduct.setCart(cart);
         newCartProduct.setProduct(product);
-        newCartProduct.setTotalPrice(totalPrice);
+        newCartProduct.setTotalPrice(product.getPrice() * quantity);
         newCartProduct.setQuantity(quantity); 
 
         return newCartProduct;

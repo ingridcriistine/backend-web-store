@@ -1,14 +1,12 @@
 package com.example.demo.services;
 
-import java.util.List;
-
 import com.example.demo.model.Cart;
-import com.example.demo.model.CartProduct;
+import com.example.demo.model.Product;
 import com.example.demo.model.UserModel;
 
 public interface CartService {
-    Cart createCart(UserModel user, List<CartProduct> cartProduct, Float totalPrice);
-    Cart updateCart(Long id, UserModel user, List<CartProduct> cartProduct, Float totalPrice);
-    Cart deleteCart(Long id);
+    Cart createCart(UserModel user);
+    Cart updateCart(Long id, int quantity, Product product);
+    Cart deleteCart(Long idCart, Long idProduct);
     Cart getCart(Long id);
 }
