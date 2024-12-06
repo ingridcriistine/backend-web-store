@@ -23,7 +23,7 @@ public class CategoryImpl implements  CategoryService{
         newCategory.setName(name);
         categoryRepo.saveAndFlush(newCategory);
 
-        return category.getFirst();
+        return newCategory;
     }
 
     @Override

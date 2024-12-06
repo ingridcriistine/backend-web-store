@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.ProductData;
+import com.example.demo.dto.Token;
+import com.example.demo.repositories.CategoryRepository;
+import com.example.demo.repositories.ProductRepository;
 import com.example.demo.services.ProductService;
 
 @RestController
@@ -24,67 +27,78 @@ public class ProductController {
     @Autowired
     ProductService productService;
 
+    @Autowired
+    ProductRepository productRepo;
+
+    @Autowired
+    CategoryRepository categoryRepo;
+
     @PostMapping("/product")
-    public ResponseEntity<Object> createProduct(@RequestAttribute("token") String token, @RequestBody ProductData productData) {
+    public ResponseEntity<Object> createProduct(@RequestAttribute("token") Token token, @RequestBody ProductData productData) {
         
-        var op = productService.createProduct(productData.title(), productData.price(), productData.category(), productData.status());
+        var op = categoryRepo.findById(productData.category());
         
         if(productData.title() == null || productData.price() == null || productData.status() == null) {
             return new ResponseEntity<>("Por favor, preencha corretamente todos os campos!", HttpStatus.BAD_REQUEST);
         }
 
-        if(op == null) {
+        if(op.isEmpty()) {
             return new ResponseEntity<>("Categoria inválida!", HttpStatus.BAD_REQUEST);
         }
         
+        productService.createProduct(productData.title(), productData.price(), productData.category(), productData.status());
         return new ResponseEntity<>("Produto cadastrado com sucesso!", HttpStatus.OK);
     }
 
     @PutMapping("product/{id}")
-    public ResponseEntity<Object> updateProduct(@RequestAttribute("token") String token, @PathVariable Long id, @RequestBody ProductData productData) {
+    public ResponseEntity<Object> updateProduct(@RequestAttribute("token") Token token, @PathVariable Long id, @RequestBody ProductData productData) {
     
-        var op = productService.updateProduct(productData.id(), productData.title(), productData.price(), productData.status(), productData.category());
+        var op = productRepo.findById(id);
 
-        if(op == null) {
+        if(op.isEmpty()) {
             return new ResponseEntity<>("Produto inválido!", HttpStatus.BAD_REQUEST);
         }
 
+        productService.updateProduct(id, productData.title(), productData.price(), productData.status(), productData.category());
         return new ResponseEntity<>("Produto atualizado com sucesso!", HttpStatus.OK);
     }
 
     @DeleteMapping("/product/{id}")
-    public ResponseEntity<Object> deleteProduct(@RequestAttribute("token") String token, @PathVariable Long id) {
+    public ResponseEntity<Object> deleteProduct(@RequestAttribute("token") Token token, @PathVariable Long id) {
         
-        var op = productService.deleteProduct(id);
+        var op = productRepo.findById(id);
 
         if(op == null) {
             return new ResponseEntity<>("Produto inválido!", HttpStatus.BAD_REQUEST);
         }
 
+        productService.deleteProduct(id);
         return new ResponseEntity<>("Produto deletado com sucesso!", HttpStatus.OK);
     }
 
     @GetMapping("/product/{id}")
     public ResponseEntity<ProductData> getProduct(@PathVariable Long id) {
         
-        var op = productService.getProduct(id);
+        var op = productRepo.findById(id);
         
         if(op == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>(new ProductData(op.getId(), op.getTitle(), op.getPrice(), op.getStatus(), op.getCategory()), HttpStatus.OK);
+        var product = productService.getProduct(id);
+        return new ResponseEntity<>(new ProductData(product.getTitle(), product.getPrice(), product.getStatus(), product.getCategory().getId()), HttpStatus.OK);
     }
 
     @PatchMapping("product/{id}")
     public ResponseEntity<Object> setStatus(@RequestAttribute("token") String token, @PathVariable Long id, @RequestBody Boolean status) {
     
-        var op = productService.setStatus(id, status);
+        var op = productRepo.findById(id);
 
         if(op == null) {
             return new ResponseEntity<>("Produto inválido!", HttpStatus.BAD_REQUEST);
         }
 
+        productService.setStatus(id, status);
         return new ResponseEntity<>("Status de produto atualizado com sucesso!", HttpStatus.OK);
 	}
 }

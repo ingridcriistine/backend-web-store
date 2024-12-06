@@ -2,7 +2,6 @@ package com.example.demo.implementations;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.example.demo.model.Category;
 import com.example.demo.model.Product;
 import com.example.demo.repositories.CategoryRepository;
 import com.example.demo.repositories.ProductRepository;
@@ -17,8 +16,8 @@ public class ProductImpl implements  ProductService {
     CategoryRepository categoryRepo;
     
     @Override
-    public Product createProduct(String title, Float price, Category category, Boolean status) {
-        var findCategory = categoryRepo.findByName(category.getName());
+    public Product createProduct(String title, Float price, Long category, Boolean status) {
+        var findCategory = categoryRepo.findById(category);
 
         if(findCategory == null) {
             return null;
@@ -27,7 +26,7 @@ public class ProductImpl implements  ProductService {
         var newProduct = new Product();
         newProduct.setTitle(title);
         newProduct.setPrice(price);
-        newProduct.setCategory(category);
+        newProduct.setCategory(findCategory.get());
         newProduct.setStatus(status);
         productRepo.saveAndFlush(newProduct);
 
@@ -35,8 +34,9 @@ public class ProductImpl implements  ProductService {
     }
 
     @Override
-    public Product updateProduct(Long id, String title, Float price, Boolean status, Category category) {
+    public Product updateProduct(Long id, String title, Float price, Boolean status, Long category) {
         var product = productRepo.findById(id);
+        var findCategory = categoryRepo.findById(category);
         
         if(product.isEmpty()) {
             return null;
@@ -45,7 +45,7 @@ public class ProductImpl implements  ProductService {
         product.get().setTitle(title);
         product.get().setPrice(price);
         product.get().setStatus(status);
-        product.get().setCategory(category);
+        product.get().setCategory(findCategory.get());
         productRepo.saveAndFlush(product.get());
 
         return product.get();
