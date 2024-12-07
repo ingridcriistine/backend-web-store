@@ -109,8 +109,8 @@ public class CartImpl implements CartService {
         var delProduct = cart.getCartProduct();
         cart.setTotalPrice(cart.getTotalPrice() - temp.getTotalPrice());
         delProduct.remove(temp);
+        cartProductRepo.deleteById(temp.getId());
         cart.setCartProduct(delProduct);
-        cartProductRepo.deleteById(product.getId());
         cartRepo.saveAndFlush(cart);
 
         return cart;
