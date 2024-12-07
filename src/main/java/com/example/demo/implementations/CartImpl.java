@@ -32,7 +32,7 @@ public class CartImpl implements CartService {
     public Cart createCart(UserModel user) {
         var findUser = userRepo.findById(user.getId());
 
-        if(findUser == null) {
+        if(findUser.isEmpty()) {
             return null;
         }
 
@@ -40,6 +40,7 @@ public class CartImpl implements CartService {
         newCart.setUser(user);
         newCart.setCartProduct(new ArrayList<>());
         newCart.setTotalPrice(0.f);
+        cartRepo.saveAndFlush(newCart);
 
         return newCart;
     }
@@ -58,29 +59,34 @@ public class CartImpl implements CartService {
             if(cartProduct.getProduct().equals(product)) {
                 cartProduct.setQuantity(cartProduct.getQuantity()+quantity);
                 cartProduct.setTotalPrice(cartProduct.getTotalPrice() + (product.getPrice() * quantity));
+                cart.setTotalPrice(cart.getTotalPrice() + cartProduct.getTotalPrice());
+                cartRepo.save(cart);
 
-                return cartRepo.save(cart);
+                return cart;
             }
-        }
+        } 
 
         var newCartProduct = new CartProduct();
         newCartProduct.setCart(cart);
         newCartProduct.setProduct(product);
         newCartProduct.setTotalPrice(product.getPrice() * quantity);
         newCartProduct.setQuantity(quantity); 
+        cartProductRepo.saveAndFlush(newCartProduct);
 
         var addProduct = cart.getCartProduct();
         addProduct.add(newCartProduct);
         cart.setCartProduct(addProduct);
+        cart.setTotalPrice(cart.getTotalPrice() + newCartProduct.getTotalPrice());
+        cartRepo.save(cart);
 
-        return cartRepo.save(cart);
+        return cart;
     }
 
     @Override
     public Cart deleteCart(Long idCart, Long idProduct) {
         var cartOp = cartRepo.findById(idCart);
         var productOp = productRepo.findById(idProduct);
-
+        
         if(cartOp.isEmpty() || productOp.isEmpty()) {
             return null;
         }
@@ -90,17 +96,24 @@ public class CartImpl implements CartService {
         CartProduct temp = null;
 
         for (CartProduct cartProduct : cart.getCartProduct()) {
-
             if(cartProduct.getProduct().equals(product)) {
                 temp = cartProduct;
+                break;
             }
         }
 
+        if (temp == null) {
+            return null;
+        }
+        
         var delProduct = cart.getCartProduct();
+        cart.setTotalPrice(cart.getTotalPrice() - temp.getTotalPrice());
         delProduct.remove(temp);
+        cartProductRepo.deleteById(temp.getId());
         cart.setCartProduct(delProduct);
+        cartRepo.saveAndFlush(cart);
 
-        return cartRepo.save(cart);
+        return cart;
     }
 
     @Override
