@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.CartData;
-import com.example.demo.dto.DeleteCart;
 import com.example.demo.dto.Token;
 import com.example.demo.repositories.CartRepository;
+import com.example.demo.repositories.ProductRepository;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.CartService;
 
@@ -33,6 +33,9 @@ public class CartController {
     @Autowired
     UserRepository userRepo;
 
+    @Autowired
+    ProductRepository productRepo;
+
     // @PostMapping("/cart")
     // public ResponseEntity<Object> createCart(@RequestAttribute("token") Token token, @RequestBody CartData cartData) {
         
@@ -46,34 +49,40 @@ public class CartController {
     //     return new ResponseEntity<>("Carrinho gerado com sucesso!", HttpStatus.OK);
     // }
 
-    @PutMapping("cart/{id}")
+    @PutMapping("/cart")
     public ResponseEntity<Object> updateCart(@RequestAttribute("token") Token token, @RequestBody CartData cartData) {
         
         var user = userRepo.findById(token.getId());
+        var product = productRepo.findById(cartData.product());
 
         if(user.isEmpty()) {
             return new ResponseEntity<>("Usuário inválido!", HttpStatus.BAD_REQUEST);
         }
+
+        if(product.isEmpty()) {
+            return new ResponseEntity<>("Produto inválido!", HttpStatus.BAD_REQUEST);
+        }
         
-        var op = cartService.updateCart(cartData.id(), cartData.quantity(), cartData.product());
+        var op = cartService.updateCart(token.getId(), cartData.quantity(), product.get());
 
         if(op == null) {
             return new ResponseEntity<>("Carrinho inválido!", HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>("Produto atualizado com sucesso!", HttpStatus.OK);
+        return new ResponseEntity<>("Carrinho atualizado com sucesso!", HttpStatus.OK);
     }
 
     @DeleteMapping("/cart/{id}")
-    public ResponseEntity<Object> deleteCart(@RequestAttribute("token") Token token, @PathVariable DeleteCart data) {
+    public ResponseEntity<Object> deleteCart(@RequestAttribute("token") Token token, @PathVariable Long id) {
 
-        var op = cartService.deleteCart(data.idCart(), data.idProduct());
+        var op = productRepo.findById(id);
 
-         if(op == null) {
+        if(op.isEmpty()) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
-        return new ResponseEntity<>("Carrinho deletado com sucesso!", HttpStatus.OK);
+        cartService.deleteCart(token.getId(), id);
+        return new ResponseEntity<>("Produto removido do carrinho!", HttpStatus.OK);
 
     }
 
