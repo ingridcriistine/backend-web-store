@@ -17,9 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.CartData;
 import com.example.demo.dto.CartProductData;
-import com.example.demo.dto.ProductData;
 import com.example.demo.dto.Token;
-import com.example.demo.model.CartProduct;
 import com.example.demo.repositories.CartProductRepository;
 import com.example.demo.repositories.CartRepository;
 import com.example.demo.repositories.ProductRepository;
@@ -111,10 +109,12 @@ public class CartController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
-        List<CartProductData> productDataList = cartProRepo.findAll().stream()
+        List<CartProductData> productDataList = cartProductOp.stream()
             .map(cartProduct -> new CartProductData(
                 cartProduct.getId(),
+                cartProduct.getProduct().getTitle(),
                 cartProduct.getQuantity(),
+                cartProduct.getProduct().getPrice(),
                 cartProduct.getTotalPrice()
             ))
             .collect(Collectors.toList());
