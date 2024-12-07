@@ -1,5 +1,8 @@
 package com.example.demo.controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,10 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.CartData;
 import com.example.demo.dto.CartProductData;
+import com.example.demo.dto.ProductData;
 import com.example.demo.dto.Token;
+import com.example.demo.model.CartProduct;
+import com.example.demo.repositories.CartProductRepository;
 import com.example.demo.repositories.CartRepository;
 import com.example.demo.repositories.ProductRepository;
 import com.example.demo.repositories.UserRepository;
+import com.example.demo.services.CartProductService;
 import com.example.demo.services.CartService;
 
 
@@ -36,6 +43,12 @@ public class CartController {
 
     @Autowired
     ProductRepository productRepo;
+
+    @Autowired
+    CartProductRepository cartProRepo;
+
+    @Autowired
+    CartProductService cartProService;
 
     // @PostMapping("/cart")
     // public ResponseEntity<Object> createCart(@RequestAttribute("token") Token token, @RequestBody CartData cartData) {
@@ -92,12 +105,21 @@ public class CartController {
         
         var userOp = userRepo.findById(token.getId());
         var cartOp = cartRepo.findByUser(userOp.get());  
+        var cartProductOp = cartProRepo.findByCart(cartOp.get(0));
               
-        if(cartOp == null) {
+        if(cartProductOp == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+
+        List<CartProductData> productDataList = cartProRepo.findAll().stream()
+            .map(cartProduct -> new CartProductData(
+                cartProduct.getId(),
+                cartProduct.getQuantity(),
+                cartProduct.getTotalPrice()
+            ))
+            .collect(Collectors.toList());
         
         var cart = cartService.getCart(cartOp.get(0).getId());
-        return new ResponseEntity<>(new CartProductData(cart.getId(), cart.getTotalPrice()), HttpStatus.OK);
+        return new ResponseEntity<>(productDataList, HttpStatus.OK);
     }
 }
