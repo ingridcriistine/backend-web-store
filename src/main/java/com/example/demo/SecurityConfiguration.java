@@ -29,6 +29,7 @@ public class SecurityConfiguration {
                 .requestMatchers("/auth").permitAll()
                 .requestMatchers("/category/*").permitAll()
                 .requestMatchers("/product/*").permitAll()
+                .requestMatchers("/product").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(new JWTAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class)

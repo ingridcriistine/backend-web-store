@@ -79,6 +79,36 @@ public class UserImplements implements UserService{
         return true;
     }
 
+    @Override
+    public UserModel getUser(Long id) {
+        var user = repo.findById(id);
+        
+        if(user.isEmpty()) {
+            return null;
+        }
+
+        return user.get();
+    }
+
+    @Override
+    public UserModel updateUser(Long id, String name, String email, String cpf, String password, Boolean actvAccount) {
+        var user = repo.findById(id);
+        
+        if(user.isEmpty()) {
+            return null;
+        }
+
+        user.get().setName(name);
+        user.get().setEmail(email);
+        user.get().setCpf(cpf);
+        user.get().setPassword(password);
+        user.get().setActvAccount(actvAccount);
+        
+        repo.saveAndFlush(user.get());
+
+        return user.get();
+    }
+
 
  
 }

@@ -1,6 +1,7 @@
 package com.example.demo.controllers;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -93,11 +94,20 @@ public class ProductController {
     }
 
     @GetMapping("/product")
-    public ResponseEntity<List<Product>> allProducts() {
-        List<Product> produtos = productRepo.findAll(); // Retorna a lista de entidades diretamente
-        return new ResponseEntity<>(produtos, HttpStatus.OK);
-    }
+    public ResponseEntity<List<ProductData>> allProducts() {
+        // Converte a lista de entidades Product para ProductData usando stream
+        List<ProductData> productDataList = productRepo.findAll().stream()
+            .map(product -> new ProductData(
+                product.getTitle(),
+                product.getPrice(),
+                product.getStatus(),
+                product.getCategory().getId()
+            ))
+            .collect(Collectors.toList());
     
+        return new ResponseEntity<>(productDataList, HttpStatus.OK);
+    }
+
     @PatchMapping("product/{id}")
     public ResponseEntity<Object> setStatus(@RequestAttribute("token") String token, @PathVariable Long id, @RequestBody Boolean status) {
     
