@@ -1,5 +1,7 @@
 package com.example.demo.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.ProductData;
 import com.example.demo.dto.Token;
+import com.example.demo.model.Product;
 import com.example.demo.repositories.CategoryRepository;
 import com.example.demo.repositories.ProductRepository;
 import com.example.demo.services.ProductService;
@@ -89,6 +92,12 @@ public class ProductController {
         return new ResponseEntity<>(new ProductData(product.getTitle(), product.getPrice(), product.getStatus(), product.getCategory().getId()), HttpStatus.OK);
     }
 
+    @GetMapping("/product")
+    public ResponseEntity<List<Product>> allProducts() {
+        List<Product> produtos = productRepo.findAll(); // Retorna a lista de entidades diretamente
+        return new ResponseEntity<>(produtos, HttpStatus.OK);
+    }
+    
     @PatchMapping("product/{id}")
     public ResponseEntity<Object> setStatus(@RequestAttribute("token") String token, @PathVariable Long id, @RequestBody Boolean status) {
     

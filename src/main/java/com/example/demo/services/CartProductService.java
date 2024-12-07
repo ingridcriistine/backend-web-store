@@ -9,4 +9,5 @@ public interface CartProductService {
     CartProduct updateCartProduct(Long id, int quantity, Float totalPrice, Cart cart, Product product);
     CartProduct deleteCartProduct(Long id);
     CartProduct getCartProduct(Long id);
+    
 }

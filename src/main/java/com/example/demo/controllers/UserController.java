@@ -3,12 +3,15 @@ package com.example.demo.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.Login;
+import com.example.demo.dto.ProductData;
 import com.example.demo.dto.SecurityToken;
 import com.example.demo.dto.Token;
 import com.example.demo.dto.UserData;
@@ -89,6 +92,20 @@ public class UserController{
 
         return new ResponseEntity<>(new SecurityToken(jwt, "Sign In With Sucess"), HttpStatus.OK);
 
+    }
+
+    
+    @GetMapping("/user/{id}")
+    public ResponseEntity<UserData> getUser(@PathVariable Long id) {
+        
+        var op = productRepo.findById(id);
+        
+        if(op == null) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+
+        var product = productService.getProduct(id);
+        return new ResponseEntity<>(new ProductData(product.getTitle(), product.getPrice(), product.getStatus(), product.getCategory().getId()), HttpStatus.OK);
     }
 
 }
