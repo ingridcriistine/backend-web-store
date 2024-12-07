@@ -49,6 +49,10 @@ public class UserController{
 
     @PostMapping("/user")
     public ResponseEntity<String> create(@RequestBody UserData data){
+        var verificaCpf = repo.findByCpf(data.cpf());
+
+        var verificaEmail = repo.findByEmail(data.email());
+
         if(data.name().isEmpty() || data.email().isEmpty() || data.cpf().isEmpty() || data.password().isEmpty()){
             return new ResponseEntity<>("Os campos não podem ser vazios!", HttpStatus.BAD_REQUEST);
         }
@@ -63,9 +67,17 @@ public class UserController{
             return new ResponseEntity<>("Senha deve ter no minímo 12 caracteres, letra maiuscula, letra minuscula e número", HttpStatus.BAD_REQUEST);
         }
 
-      
+        if(!verificaCpf.isEmpty()){
+            return new ResponseEntity<>("Cpf inválido", HttpStatus.BAD_REQUEST);
+        }
+
+        if(!verificaEmail.isEmpty()){
+            return new ResponseEntity<>("Email já em uso", HttpStatus.BAD_REQUEST);
+        }
+
         var user = service.create(data.name(), data.email(), data.cpf(), data.password(), data.account());
         cartService.createCart(user);
+
         return new ResponseEntity<>("Usuário cadastrado", HttpStatus.OK);
     }
 
