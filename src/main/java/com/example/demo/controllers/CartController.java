@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.CartData;
+import com.example.demo.dto.CartProductData;
 import com.example.demo.dto.Token;
 import com.example.demo.repositories.CartRepository;
 import com.example.demo.repositories.ProductRepository;
@@ -97,6 +98,6 @@ public class CartController {
         }
         
         var cart = cartService.getCart(cartOp.get(0).getId());
-        return new ResponseEntity<>(cart, HttpStatus.OK);
+        return new ResponseEntity<>(new CartProductData(cart.getId(), cart.getTotalPrice()), HttpStatus.OK);
     }
 }
