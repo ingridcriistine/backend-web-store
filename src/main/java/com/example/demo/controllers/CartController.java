@@ -119,7 +119,7 @@ public class CartController {
             ))
             .collect(Collectors.toList());
         
-        var cart = cartService.getCart(cartOp.get(0).getId());
+        // var cart = cartService.getCart(cartOp.get(0).getId());
         return new ResponseEntity<>(productDataList, HttpStatus.OK);
     }
 }
