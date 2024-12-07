@@ -1,7 +1,6 @@
 package com.example.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dto.CategoryData;
 import com.example.demo.dto.Login;
-import com.example.demo.dto.ProductData;
 import com.example.demo.dto.SecurityToken;
 import com.example.demo.dto.Token;
 import com.example.demo.dto.UserData;
@@ -72,17 +69,17 @@ public class UserController{
         return new ResponseEntity<>("Usuário cadastrado", HttpStatus.OK);
     }
 
-    @GetMapping("/user/{id}")
-    public ResponseEntity<UserData> getUser(@PathVariable Long id) {
-        
-        var op = repo.findById(id);
+    @GetMapping("/user")
+    public ResponseEntity<Object> getUser(@RequestAttribute("token") Token token) {
+        var op = repo.findById(token.getId());
         
         if(op == null) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
 
-        var user = service.getUser(id);
-        return new ResponseEntity<>(new UserData(user.getName(), user.getEmail(), user.getCpf(), user.getPassword(), user.getActvAccount()), HttpStatus.OK);
+        var user = service.getUser(op.get().getId());
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping("/auth")
@@ -111,16 +108,16 @@ public class UserController{
 
     }
     
-    @PutMapping("user/{id}")
-    public ResponseEntity<Object> updateUser(@RequestAttribute("token") Token token, @PathVariable Long id, @RequestBody UserData data) {
+    @PutMapping("/user")
+    public ResponseEntity<Object> updateUser(@RequestAttribute("token") Token token, @RequestBody UserData data) {
     
-        var op = repo.findById(id);
+        var op = repo.findById(token.getId());
         
         if(op == null) {
             return new ResponseEntity<>("ID inválido!", HttpStatus.BAD_REQUEST);
         }
 
-        service.updateUser(id, data.name(), data.email(), data.cpf(), data.password(), data.account());
+        service.updateUser(token.getId(), data.name(), data.email(), data.cpf(), data.password(), data.account());
         return new ResponseEntity<>("Usuario atualizado com sucesso!", HttpStatus.OK);
     }
     
