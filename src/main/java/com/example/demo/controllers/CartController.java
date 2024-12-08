@@ -65,7 +65,7 @@ public class CartController {
     public ResponseEntity<Object> updateCart(@RequestAttribute("token") Token token, @RequestBody CartData cartData) {
         
         var user = userRepo.findById(token.getId());
-        var product = productRepo.findById(cartData.product());
+        var product = productRepo.findById(cartData.product()); 
 
         if(user.isEmpty()) {
             return new ResponseEntity<>("Usuário inválido!", HttpStatus.BAD_REQUEST);

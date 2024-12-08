@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.ProductData;
 import com.example.demo.dto.Token;
-import com.example.demo.model.Product;
 import com.example.demo.repositories.CategoryRepository;
 import com.example.demo.repositories.ProductRepository;
 import com.example.demo.services.ProductService;
@@ -90,7 +89,7 @@ public class ProductController {
         }
 
         var product = productService.getProduct(id);
-        return new ResponseEntity<>(new ProductData(product.getTitle(), product.getPrice(), product.getStatus(), product.getCategory().getId()), HttpStatus.OK);
+        return new ResponseEntity<>(new ProductData(product.getId(), product.getTitle(), product.getPrice(), product.getStatus(), product.getCategory().getId()), HttpStatus.OK);
     }
 
     @GetMapping("/product")
@@ -98,6 +97,7 @@ public class ProductController {
         // Converte a lista de entidades Product para ProductData usando stream
         List<ProductData> productDataList = productRepo.findAll().stream()
             .map(product -> new ProductData(
+                product.getId(),
                 product.getTitle(),
                 product.getPrice(),
                 product.getStatus(),
