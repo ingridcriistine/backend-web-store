@@ -90,25 +90,55 @@ public class UserImplements implements UserService{
         return user.get();
     }
 
+    // @Override
+    // public UserModel updateUser(Long id, String name, String email, String cpf, String password, Boolean actvAccount) {
+    //     var user = repo.findById(id);
+        
+    //     if(user.isEmpty()) {
+    //         return null;
+    //     }
+
+    //     user.get().setName(name);
+    //     user.get().setEmail(email);
+    //     user.get().setCpf(cpf);
+    //     user.get().setPassword(password);
+    //     user.get().setActvAccount(actvAccount);
+        
+    //     repo.saveAndFlush(user.get());
+
+    //     return user.get();
+    // }
+
+
     @Override
     public UserModel updateUser(Long id, String name, String email, String cpf, String password, Boolean actvAccount) {
-        var user = repo.findById(id);
+        var userOptional = repo.findById(id);
         
-        if(user.isEmpty()) {
+        if (userOptional.isEmpty()) {
             return null;
         }
 
-        user.get().setName(name);
-        user.get().setEmail(email);
-        user.get().setCpf(cpf);
-        user.get().setPassword(password);
-        user.get().setActvAccount(actvAccount);
-        
-        repo.saveAndFlush(user.get());
+        UserModel user = userOptional.get();
 
-        return user.get();
-    }
+        if (name != null && !name.isEmpty()) {
+            user.setName(name);
+        }
+        if (email != null && !email.isEmpty()) {
+            user.setEmail(email);
+        }
+        if (cpf != null && !cpf.isEmpty()) {
+            user.setCpf(cpf);
+        }
+        if (password != null && !password.isEmpty()) {
+            user.setPassword(password); // Certifique-se de criptografar antes de salvar!
+        }
+        if (actvAccount != null) {
+            user.setActvAccount(actvAccount);
+        }
 
+    repo.saveAndFlush(user);
 
+    return user;
+}
  
 }

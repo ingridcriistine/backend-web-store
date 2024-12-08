@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
@@ -72,7 +71,7 @@ public class UserController{
         }
 
         if(!verificaEmail.isEmpty()){
-            return new ResponseEntity<>("Email já em uso", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Email já em uso", HttpStatus.CONFLICT);
         }
 
         var user = service.create(data.name(), data.email(), data.cpf(), data.password(), data.account());
@@ -103,6 +102,10 @@ public class UserController{
 
         UserModel Login = service.authUser(data.login(),data.password() );
 
+        if(!Login.getActvAccount()){
+            return new ResponseEntity<>(new SecurityToken(null, "O usuário está inativado"), HttpStatus.CONFLICT);
+        }
+
         if (Login == null) {
             return new ResponseEntity<>(new SecurityToken(null, "Usuário não existe"), HttpStatus.CONFLICT);
         }
@@ -116,7 +119,7 @@ public class UserController{
 
         var jwt = jwtService.get(token);
 
-        return new ResponseEntity<>(new SecurityToken(jwt, "Sign In With Sucess"), HttpStatus.OK);
+        return new ResponseEntity<>(new SecurityToken(jwt, "Logado com sucesso"), HttpStatus.OK);
 
     }
     
@@ -132,6 +135,6 @@ public class UserController{
         service.updateUser(token.getId(), data.name(), data.email(), data.cpf(), data.password(), data.account());
         return new ResponseEntity<>("Usuario atualizado com sucesso!", HttpStatus.OK);
     }
-    
+
 
 }
