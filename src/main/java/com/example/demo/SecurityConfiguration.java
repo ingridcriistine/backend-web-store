@@ -28,6 +28,7 @@ public class SecurityConfiguration {
                 .requestMatchers("/user").permitAll()
                 .requestMatchers("/user/*").permitAll()
                 .requestMatchers("/auth").permitAll()
+                .requestMatchers("/category").permitAll()
                 .requestMatchers("/category/*").permitAll()
                 .requestMatchers("/product/*").permitAll()
                 .requestMatchers("/product").permitAll()
