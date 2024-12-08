@@ -1,5 +1,8 @@
 package com.example.demo.controllers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -81,6 +84,19 @@ public class CategoryController {
         }
 
         var category = categoryService.getCategory(id);
-        return new ResponseEntity<>(new CategoryData(category.getName()), HttpStatus.OK);
+        return new ResponseEntity<>(new CategoryData(category.getId(), category.getName()), HttpStatus.OK);
+    }
+
+    @GetMapping("/category")
+    public ResponseEntity<List<CategoryData>> allCategories() {
+        // Converte a lista de entidades Product para ProductData usando stream
+        List<CategoryData> categoryDataList = categoryRepo.findAll().stream()
+            .map(category -> new CategoryData(
+                category.getId(),
+                category.getName()
+            ))
+            .collect(Collectors.toList());
+    
+        return new ResponseEntity<>(categoryDataList, HttpStatus.OK);
     }
 }
