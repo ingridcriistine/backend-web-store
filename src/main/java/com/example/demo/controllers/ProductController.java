@@ -49,7 +49,7 @@ public class ProductController {
             return new ResponseEntity<>("Categoria inválida!", HttpStatus.BAD_REQUEST);
         }
         
-        productService.createProduct(productData.title(), productData.price(), productData.category(), productData.status());
+        productService.createProduct(productData.title(), productData.price(), productData.category(), productData.status(), productData.image());
         return new ResponseEntity<>("Produto cadastrado com sucesso!", HttpStatus.OK);
     }
 
@@ -62,7 +62,7 @@ public class ProductController {
             return new ResponseEntity<>("Produto inválido!", HttpStatus.BAD_REQUEST);
         }
 
-        productService.updateProduct(id, productData.title(), productData.price(), productData.status(), productData.category());
+        productService.updateProduct(id, productData.title(), productData.price(), productData.status(), productData.category(), productData.image());
         return new ResponseEntity<>("Produto atualizado com sucesso!", HttpStatus.OK);
     }
 
@@ -89,7 +89,7 @@ public class ProductController {
         }
 
         var product = productService.getProduct(id);
-        return new ResponseEntity<>(new ProductData(product.getId(), product.getTitle(), product.getPrice(), product.getStatus(), product.getCategory().getId()), HttpStatus.OK);
+        return new ResponseEntity<>(new ProductData(product.getId(), product.getTitle(), product.getPrice(), product.getStatus(), product.getCategory().getId(), product.getImage()), HttpStatus.OK);
     }
 
     @GetMapping("/product")
@@ -101,7 +101,8 @@ public class ProductController {
                 product.getTitle(),
                 product.getPrice(),
                 product.getStatus(),
-                product.getCategory().getId()
+                product.getCategory().getId(),
+                product.getImage()
             ))
             .collect(Collectors.toList());
     

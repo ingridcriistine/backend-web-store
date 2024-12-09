@@ -16,7 +16,7 @@ public class ProductImpl implements  ProductService {
     CategoryRepository categoryRepo;
     
     @Override
-    public Product createProduct(String title, Float price, Long category, Boolean status) {
+    public Product createProduct(String title, Float price, Long category, Boolean status, String image) {
         var findCategory = categoryRepo.findById(category);
 
         if(findCategory == null) {
@@ -28,13 +28,14 @@ public class ProductImpl implements  ProductService {
         newProduct.setPrice(price);
         newProduct.setCategory(findCategory.get());
         newProduct.setStatus(status);
+        newProduct.setImage(image);
         productRepo.saveAndFlush(newProduct);
 
         return newProduct;
     }
 
     @Override
-    public Product updateProduct(Long id, String title, Float price, Boolean status, Long category) {
+    public Product updateProduct(Long id, String title, Float price, Boolean status, Long category, String image) {
         var product = productRepo.findById(id);
         var findCategory = categoryRepo.findById(category);
         
@@ -46,6 +47,7 @@ public class ProductImpl implements  ProductService {
         product.get().setPrice(price);
         product.get().setStatus(status);
         product.get().setCategory(findCategory.get());
+        product.get().setImage(image);
         productRepo.saveAndFlush(product.get());
 
         return product.get();
