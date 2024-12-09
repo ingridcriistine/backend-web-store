@@ -67,7 +67,7 @@ public class UserController{
         }
 
         if(!verificaCpf.isEmpty()){
-            return new ResponseEntity<>("Cpf inválido", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Cpf inválido ou já em uso", HttpStatus.BAD_REQUEST);
         }
 
         if(!verificaEmail.isEmpty()){
@@ -118,6 +118,14 @@ public class UserController{
         token.setId(Login.getId());
 
         var jwt = jwtService.get(token);
+
+        if ("adm@email.com".equals(Login.getEmail())) {
+            // Validação de senha para o administrador
+            if (!encoder.validatePass(data.password(), Login.getPassword())) {
+                return new ResponseEntity<>(new SecurityToken(null, "Senha inválida para o administrador"), HttpStatus.CONFLICT);
+            }
+            return new ResponseEntity<>(new SecurityToken(jwt, "Bem-vindo, Administrador!"), HttpStatus.OK);
+        }
 
         return new ResponseEntity<>(new SecurityToken(jwt, "Logado com sucesso"), HttpStatus.OK);
 
