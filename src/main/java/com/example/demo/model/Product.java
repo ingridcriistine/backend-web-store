@@ -26,6 +26,9 @@ public class Product {
     @Column
     private Boolean status;
 
+    @Column
+    private String image;
+
     @ManyToOne
     @JoinColumn(name = "idCategory")
     private Category category;
@@ -68,5 +71,13 @@ public class Product {
 
     public void setStatus(Boolean status) {
         this.status = status;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

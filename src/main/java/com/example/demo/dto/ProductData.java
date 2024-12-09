@@ -5,5 +5,6 @@ public record ProductData (
     String title,
     Float price,
     Boolean status,
-    Long category
+    Long category,
+    String image
 ){}
